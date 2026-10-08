@@ -3,8 +3,10 @@
 B.Tech CSE '26 · Jabalpur, India · Machine Learning Engineer
 
 Applied ML engineer working on federated learning and LLM fine-tuning, with
-production ML serving at DRDO's Scientific Analysis Group. National winner at
-Smart India Hackathon 2024 — first place out of 300+ shortlisted teams.
+production ML serving at DRDO's Scientific Analysis Group. Winner at Smart India
+Hackathon 2024 for problem statement SIH1649 — a DDoS protection system for the
+cloud, posed by DRDO under the Ministry of Defence — from a field of 49,000+
+teams nationwide.
 
 ## Projects
 
@@ -46,12 +48,12 @@ is the writeup.
 
 `XGBoost · Flower (flwr) · FastAPI · Streamlit · scikit-learn`
 
-### HackerRank — Orchestrate "Buy or Wait?"
+### The Month-End — HackerRank competition
 
-A financial decision agent: for each purchase request, decide whether the user
-can buy now, wait, pay partially, use installments, or not proceed — under a
-90-day cash-flow forecast, recurring expenses, pending payments and a
-minimum-balance constraint.
+A financial decision agent, built for the HackerRank *Orchestrate* challenge: for
+each purchase request, decide whether the user can buy now, wait, pay partially,
+use installments, or not proceed — under a 90-day cash-flow forecast, recurring
+expenses, pending payments and a minimum-balance constraint.
 
 Fully deterministic, with **zero model calls and zero tokens**. Ranking is a
 specified comparator, not a sampled one; OCR falls back deterministically when
