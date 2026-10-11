@@ -10,41 +10,49 @@ teams nationwide.
 
 ## Projects
 
-### Preprint Critic — QLoRA fine-tune of Qwen3-1.7B
+### [Preprint Critic](https://github.com/HAT-ZAID/Preprint-Critic) — LoRA fine-tune of Qwen3-4B
 
 Given a paper's text, generates a structured peer review. Trained on
-ReviewRebuttal: 500 ICLR papers paired with human reviews, expanded to 1,584
-training rows.
+[Re²](https://huggingface.co/datasets/Daoze/ReviewRebuttal) — 2,000 OpenReview
+submissions paired with their human reviews.
 
-The part worth reading is the data work. Splitting on `paper_id` rather than on
-rows, because reviews expand into multiple rows per paper — a row-level split
-puts reviews of the same paper on both sides. Audited 50 sampled papers to
-confirm zero overlap. Regex-stripping references and appendices cut input length
-25.5% before tokenisation, and loss is masked to the completion only so prompt
-tokens never enter the supervised signal.
+A review is only worth reading if it's grounded in the paper, so that's what the
+prompt asks for. Rather than "review this paper," the model gets a checklist of
+what to verify: the claims and assumptions, whether the experiments actually
+support them, whether the baselines are sufficient, and what limitations weaken
+the conclusion. The target is the real human review, with loss masked to the
+completion alone.
 
-4-bit NF4 base via QLoRA, 34 MB adapter, 1,372 s on a single T4,
-held-out test loss 2.607.
+Reviews expand into several rows per paper, so a naive split would put two reviews
+of the same paper on both sides and quietly inflate every metric. The split is
+keyed on `paper_id` instead, and audited — 0 of 160 held-out test papers appear in
+train.
+
+LoRA r=8 on a 4-bit NF4 Qwen3-4B-Instruct-2507 base, 0.41% of parameters
+trainable, 66 MB adapter. One epoch on a single A100: validation loss 2.2226 →
+2.1685, held-out test 2.1629.
 
 `LoRA · QLoRA · PEFT · Hugging Face Transformers · bitsandbytes`
 
-### Privacy-Based Customer Churn — centralized and federated
+### [Privacy-Based Customer Churn](https://github.com/HAT-ZAID/Privacy-Based-Customer-Churn) — centralized and federated
 
 Predicting churn normally means shipping raw customer records to one server.
-This builds it twice, and the second version never lets a row leave the branch
-it came from.
+This builds it twice — a conventional XGBoost pipeline, and a federated version
+where no row leaves the branch it came from.
 
-7,043-customer dataset, 52 engineered features, 400-tree XGBoost at ROC-AUC
-0.916 / churn-class F1 0.728 on a held-out stratified test set. The federated
-rebuild uses Flower's `FedXgbBagging` across simulated branches — only trees and
-scalar metrics cross the network, and boosted trees are concatenated rather
-than weight-averaged, because you can't average trees the way you average neural
-weights.
+The dataset is the interesting part. The wider IBM export carries an
+end-of-quarter exit survey that acts as a near-deterministic label proxy: scores
+1–2 always churn, 4–5 never do. Preprocessing drops four of the five
+post-outcome fields; this one slipped through and was doing most of the work.
+Correcting reported accuracy from an inflated 0.969 to 0.858 is the writeup.
 
-The dataset ships an end-of-quarter exit-survey field that acts as a
-near-deterministic label proxy: one threshold on it alone scores 0.939 accuracy.
-Finding that, and correcting reported accuracy from an inflated 0.969 to 0.858,
-is the writeup.
+The federated version is built the way the algorithm allows rather than the way
+neural networks usually do — boosted trees are concatenated server-side, not
+weight-averaged, because averaging destroys the structure the booster depends on.
+Only trees and scalar metrics cross the network.
+
+7,043 customers, 52 features, ROC-AUC 0.916 / churn-class F1 0.728 on a held-out
+stratified test set. Served over FastAPI, with a Streamlit front end.
 
 `XGBoost · Flower (flwr) · FastAPI · Streamlit · scikit-learn`
 
