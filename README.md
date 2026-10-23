@@ -25,12 +25,15 @@ completion alone.
 
 Reviews expand into several rows per paper, so a naive split would put two reviews
 of the same paper on both sides and quietly inflate every metric. The split is
-keyed on `paper_id` instead, and audited — 0 of 160 held-out test papers appear in
+keyed on `paper_id` instead, and audited — 0 of 172 held-out test papers appear in
 train.
 
 LoRA r=8 on a 4-bit NF4 Qwen3-4B-Instruct-2507 base, 0.41% of parameters
-trainable, 66 MB adapter. One epoch on a single A100: validation loss 2.2226 →
-2.1685, held-out test 2.1629.
+trainable, 63 MiB adapter. One epoch on a single A100: 350 steps, validation loss
+2.204 → 2.1653, held-out test 2.1518. On a 10-paper pilot the adapter tracks the
+dataset's review format and length far better than the base model (higher ROUGE-L
+on 9/10), but cites the paper less — it learned the shape of a review before the
+evidence.
 
 `LoRA · QLoRA · PEFT · Hugging Face Transformers · bitsandbytes`
 
