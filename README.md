@@ -30,55 +30,21 @@ train.
 
 LoRA r=8 on a 4-bit NF4 Qwen3-4B-Instruct-2507 base, 0.41% of parameters
 trainable, 63 MiB adapter. One epoch on a single A100: 350 steps, validation loss
-2.204 → 2.1653, held-out test 2.1518. On a 10-paper pilot the adapter tracks the
-dataset's review format and length far better than the base model (higher ROUGE-L
-on 9/10), but cites the paper less — it learned the shape of a review before the
-evidence.
+2.204 → 2.1653, held-out test 2.1518. After training, the question was which settings to ship. Fifteen generation
+configurations were compared on the same weights and the same papers: length,
+ROUGE-L, embedding similarity to the human review, embedding grounding in the
+paper, and a rubric-fixed LLM judge scoring usefulness out of 100.
 
-`LoRA · QLoRA · PEFT · Hugging Face Transformers · bitsandbytes`
+The adapter wins on cost and closeness. It writes 374 words instead of roughly
+2,000, scores ROUGE-L 0.153 against 0.086, sits closer to the human review in
+embedding space (0.858 against 0.846), and returns 81 usefulness points per 1k
+generated tokens against 21.2.
 
-### [Privacy-Based Customer Churn](https://github.com/HAT-ZAID/Privacy-Based-Customer-Churn) — centralized and federated
+It loses on depth. Judged usefulness is 40.2 against 71.4 for the same prompt on
+the untuned base, because the human reviews in the dataset are themselves short
+(median 345 words) and the adapter learned that length faithfully. Shorter
+review, thinner coverage.
 
-Predicting churn normally means shipping raw customer records to one server.
-This builds it twice — a conventional XGBoost pipeline, and a federated version
-where no row leaves the branch it came from.
-
-The dataset is the interesting part. The wider IBM export carries an
-end-of-quarter exit survey that acts as a near-deterministic label proxy: scores
-1–2 always churn, 4–5 never do. Preprocessing drops four of the five
-post-outcome fields; this one slipped through and was doing most of the work.
-Correcting reported accuracy from an inflated 0.969 to 0.858 is the writeup.
-
-The federated version is built the way the algorithm allows rather than the way
-neural networks usually do — boosted trees are concatenated server-side, not
-weight-averaged, because averaging destroys the structure the booster depends on.
-Only trees and scalar metrics cross the network.
-
-7,043 customers, 52 features, ROC-AUC 0.916 / churn-class F1 0.728 on a held-out
-stratified test set. Served over FastAPI, with a Streamlit front end.
-
-`XGBoost · Flower (flwr) · FastAPI · Streamlit · scikit-learn`
-
-### The Month-End — HackerRank competition
-
-A financial decision agent, built for the HackerRank *Orchestrate* challenge: for
-each purchase request, decide whether the user can buy now, wait, pay partially,
-use installments, or not proceed — under a 90-day cash-flow forecast, recurring
-expenses, pending payments and a minimum-balance constraint.
-
-Fully deterministic, with **zero model calls and zero tokens**. Ranking is a
-specified comparator, not a sampled one; OCR falls back deterministically when
-Tesseract is missing; and the conflict-resolution hierarchy across messages,
-images and events is explicit and tested rather than inferred.
-
-`Python · pandas · pytest · Tesseract (optional)`
-
-## Stack
-
-Python · TensorFlow · Keras · scikit-learn · XGBoost · QLoRA / LoRA / PEFT ·
-Hugging Face Transformers · Flower · FastAPI · Streamlit · SQL · AWS
-
-## Certifications
-
-AWS Certified AI Practitioner (2026) · AWS Certified Cloud Practitioner (2026) ·
-NPTEL Machine Learning for Engineering Applications, IIT Madras (2025)
+Shipped configuration: LoRA r=8 adapter, temperature 0.8, top_p 0.9, top_k 40,
+repetition penalty 1.15. The prompt and settings live in `comparisons/`, the
+comparison scripts and results in `experiments/`.
