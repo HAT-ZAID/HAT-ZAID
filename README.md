@@ -1,4 +1,4 @@
-# Mohammad Zaid Khan
+﻿# Mohammad Zaid Khan
 
 B.Tech CSE '26 · Jabalpur, India · Machine Learning Engineer
 
@@ -71,19 +71,36 @@ stratified test set. Served over FastAPI, with a Streamlit front end.
 
 `XGBoost · Flower (flwr) · FastAPI · Streamlit · scikit-learn`
 
-### The Month-End — HackerRank competition
+### [The Month-End](https://github.com/HAT-ZAID/the-month-end) - Buy or Wait?
 
-A financial decision agent, built for the HackerRank *Orchestrate* challenge: for
-each purchase request, decide whether the user can buy now, wait, pay partially,
-use installments, or not proceed — under a 90-day cash-flow forecast, recurring
-expenses, pending payments and a minimum-balance constraint.
+A financial decision assistant that answers the question people actually ask at
+the checkout: *can I pay for this now without breaking the rest of my month,
+and if not, what is the smartest way to do it anyway?* It reads a balance,
+recurring bills, a payday and the seller's real payment options, then returns
+one answer: pay in full, pay part now, take installments, wait for a date, or
+don't do it.
 
-Fully deterministic, with **zero model calls and zero tokens**. Ranking is a
-specified comparator, not a sampled one; OCR falls back deterministically when
-Tesseract is missing; and the conflict-resolution hierarchy across messages,
-images and events is explicit and tested rather than inferred.
+**The model investigates and explains; Python decides.** Every machine field -
+the safe amount, the status, the method, the plan, the earliest date, the
+spending changes - comes from a deterministic kernel (facts, forecast, options,
+solver, verifier). The agent layer reads intent, calls kernel tools and writes
+the explanation; it never gets to move a number.
 
-`Python · pandas · pytest · Tesseract (optional)`
+The kernel **fails closed**: an unknown direction, a signed amount, a
+non-finite reserve, an undated cash row or a missing FX rate returns a named
+reason and a zero safe amount, never a larger one. Chat answers are verified
+against a result from the same turn, so an invented figure cannot reach the
+screen, and a clarification is passed through rather than stonewalled.
+
+Three provider privacy classes (local, paid, free), a consent gate before any
+hosted model sees account data, provider HTTP that ignores proxy environment
+variables, and prompts that treat every user string as untrusted data.
+
+717 tests, eight evaluation gates, and an honest G2: the public sample answers
+were produced by the organiser's reference implementation, and the gap is
+documented rather than fitted.
+
+`Python - pandas - Textual - SQLite - LangChain-compatible providers - pytest`
 
 ## Stack
 
@@ -94,3 +111,4 @@ Hugging Face Transformers · Flower · FastAPI · Streamlit · SQL · AWS
 
 AWS Certified AI Practitioner (2026) · AWS Certified Cloud Practitioner (2026) ·
 NPTEL Machine Learning for Engineering Applications, IIT Madras (2025)
+
