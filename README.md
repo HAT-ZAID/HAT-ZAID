@@ -1,4 +1,4 @@
-﻿# Mohammad Zaid Khan
+﻿﻿# Mohammad Zaid Khan
 
 B.Tech CSE '26 · Jabalpur, India · Machine Learning Engineer
 
@@ -71,7 +71,7 @@ stratified test set. Served over FastAPI, with a Streamlit front end.
 
 `XGBoost · Flower (flwr) · FastAPI · Streamlit · scikit-learn`
 
-### [The Month-End](https://github.com/HAT-ZAID/the-month-end) - Buy or Wait?
+### [The Month-End](https://github.com/HAT-ZAID/the-month-end)
 
 A financial decision assistant that answers the question people actually ask at
 the checkout: *can I pay for this now without breaking the rest of my month,
