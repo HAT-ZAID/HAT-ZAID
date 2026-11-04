@@ -96,9 +96,6 @@ Three provider privacy classes (local, paid, free), a consent gate before any
 hosted model sees account data, provider HTTP that ignores proxy environment
 variables, and prompts that treat every user string as untrusted data.
 
-717 tests, eight evaluation gates, and an honest G2: the public sample answers
-were produced by the organiser's reference implementation, and the gap is
-documented rather than fitted.
 
 `Python - pandas - Textual - SQLite - LangChain-compatible providers - pytest`
 
